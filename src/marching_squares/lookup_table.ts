@@ -83,11 +83,11 @@ const LOOKUP_TABLE: { case: CaseIndex, segments: LineSegment[] }[] = [
   }
 ]
 
-export function case_to_line_segments(caseIndex: CaseIndex): LineSegment[] {
+export function caseToLineSegments(caseIndex: CaseIndex): LineSegment[] {
   return LOOKUP_TABLE.find(x => x.case == caseIndex)!.segments
 }
 
-export function bools_to_index(bl: boolean, br: boolean, tr: boolean, tl: boolean): CaseIndex {
+export function boolsToCase(bl: boolean, br: boolean, tr: boolean, tl: boolean): CaseIndex {
   let idx = 0
   if (bl)
     idx += 1

@@ -3,7 +3,7 @@ import vector, { type Vec2 } from "./lib/vector.ts"
 import { clamp } from "./lib/math.ts";
 
 export const DEFAULT_PIXELS_PER_UNIT = 100
-export const MIN_PIXELS_PER_UNIT = 40
+export const MIN_PIXELS_PER_UNIT = 10
 export const MAX_PIXELS_PER_UNIT = 200
 export const ZOOM_SENSITIVITY = 0.001
 

@@ -11,6 +11,9 @@ export abstract class View {
     this.p = p;
     this.camera = new Camera2D(p)
     this.center = vector.make(0, 0)
+  }
+
+  public activate() {
     this.p.mouseDragged = (event) => onMouseDragged(event, this.camera)
     this.p.mouseWheel = (event) => onMouseWheel(event, this.camera, this.p)
   }
@@ -19,9 +22,9 @@ export abstract class View {
 }
 
 function onMouseDragged(event: MouseEvent | undefined, camera: Camera2D) {
+  console.log("Mouse dragged with", event === undefined)
   if (event === undefined)
     return
-
   camera.panByPx(vector.make(event.movementX, event.movementY))
 }
 

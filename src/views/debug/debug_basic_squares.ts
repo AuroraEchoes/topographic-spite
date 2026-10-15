@@ -3,7 +3,7 @@ import { View } from "../../view";
 import p5 from "p5";
 import vector from "../../lib/vector";
 import { Corner, corner_to_vector as cornerToVector } from "../../model/directions";
-import { bools_to_index as boolsToCase, case_to_line_segments as caseToLineSegments } from "../../marching_squares/lookup_table";
+import { boolsToCase as boolsToCase, caseToLineSegments as caseToLineSegments } from "../../marching_squares/lookup_table";
 
 export class DebugBasicSquares extends View {
   private terrain: Terrain
