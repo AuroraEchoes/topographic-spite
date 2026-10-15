@@ -16,7 +16,6 @@
     "@tweakpane/core": "^2.0.5",
     "@types/p5": "^1.7.7",
     "p5": "^2.3.4",
-    "tsm": "git+https://github.com/matthiasferch/tsm.git",
     "tweakpane": "^4.0.5",
     "uber-noise": "^0.3.1"
   }

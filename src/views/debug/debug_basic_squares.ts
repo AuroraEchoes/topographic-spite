@@ -14,31 +14,27 @@ export class DebugBasicSquares extends View {
   }
 
   public draw(): void {
-    const size = this.screenSizeWorld()
     this.p.background("white")
-    const bounds = this.screenBoundsWorld()
-    for (let y = 0; y < size.y; y++) {
-      for (let x = 0; x < size.x; x++) {
-        const worldPos = vector.make(x, y)
-        for (let height = 0.0; height < 1.0; height += 0.1) {
-          this.p.strokeWeight(4)
-          this.p.stroke(this.p.lerpColor(this.p.color("red"), this.p.color("green"), height))
-          const corners = [Corner.BottomLeft, Corner.BottomRight, Corner.TopRight, Corner.TopLeft]
-          const cornerBools = []
-          for (let corner of corners) {
-            const actualPos = vector.add(worldPos, cornerToVector(corner))
-            const sample = this.terrain.sample(actualPos)
-            cornerBools.push(sample >= height)
-          }
-          const idx = boolsToCase(cornerBools[0], cornerBools[1], cornerBools[2], cornerBools[3])
-          const segments = caseToLineSegments(idx)
-          const cellStart = this.worldToPx(worldPos)
-          const cellSize = this.worldUnitSizePx()
-          for (let segment of segments) {
-            const startWorld = vector.add(cellStart, vector.mult(segment.start, cellSize))
-            const endWorld = vector.add(cellStart, vector.mult(segment.end, cellSize))
-            this.p.line(startWorld.x, startWorld.y, endWorld.x, endWorld.y)
-          }
+
+    for (const worldPos of this.camera.gridPoints()) {
+      for (let height = 0.0; height < 1.0; height += 0.1) {
+        this.p.strokeWeight(4)
+        this.p.stroke(this.p.lerpColor(this.p.color("red"), this.p.color("green"), height))
+        const corners = [Corner.BottomLeft, Corner.BottomRight, Corner.TopRight, Corner.TopLeft]
+        const cornerBools = []
+        for (let corner of corners) {
+          const actualPos = vector.add(worldPos, cornerToVector(corner))
+          const sample = this.terrain.sample(actualPos)
+          cornerBools.push(sample >= height)
+        }
+        const idx = boolsToCase(cornerBools[0], cornerBools[1], cornerBools[2], cornerBools[3])
+        const segments = caseToLineSegments(idx)
+        const cellStart = this.camera.worldToScreen(worldPos)
+        const cellSize = this.camera.unitPx()
+        for (let segment of segments) {
+          const startWorld = vector.add(cellStart, vector.scale(segment.start, cellSize))
+          const endWorld = vector.add(cellStart, vector.scale(segment.end, cellSize))
+          this.p.line(startWorld.x, startWorld.y, endWorld.x, endWorld.y)
         }
       }
     }

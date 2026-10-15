@@ -1,6 +1,8 @@
 import { UberNoise } from "uber-noise"
 import { type Vec2 } from "../lib/vector.ts"
 
+const COORDINATE_OFFSET = 2 ** 16;
+
 export type TerrainGenerationParams = {
   seed: number
   scale: number,
@@ -12,7 +14,7 @@ export type TerrainGenerationParams = {
 
 export class Terrain {
   noise: UberNoise
-  cached: Map<Vec2, number>
+  cached: Map<number, number>
 
   public constructor(params: TerrainGenerationParams) {
     this.noise = new UberNoise({
@@ -23,18 +25,24 @@ export class Terrain {
       lacunarity: params.lacunarity,
       octaves: params.octaves,
     })
-    this.cached = new Map<Vec2, number>()
+    this.cached = new Map<number, number>()
   }
 
   public sample(pos: Vec2): number {
-    const cachedVal = this.cached.get(pos)
+    const key = this.key(pos)
+    const cachedVal = this.cached.get(key)
     if (cachedVal !== undefined) {
       return cachedVal!
     }
     else {
       const sample = this.noise.get(pos.x, pos.y)
-      this.cached.set(pos, sample)
+      this.cached.set(key, sample)
+      // console.log("Caching new position", pos.x, pos.y, "w/ key", key, " size ", this.cached.size)
       return sample
     }
+  }
+
+  private key(pos: Vec2): number {
+    return (pos.x * COORDINATE_OFFSET) + pos.y
   }
 }
