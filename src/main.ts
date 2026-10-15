@@ -1,16 +1,15 @@
 import p5 from "p5"
 import type { View } from "./view"
 import { Terrain } from "./model/terrain.ts"
-import { DebugNoiseView } from "./views/debug/debug_noise_view.ts"
-import { DebugCoordinateView } from "./views/debug/debug_coordinate_view.ts"
+import { DebugBasicSquares } from "./views/debug/debug_basic_squares.ts"
 
 const WINDOW_PADDING = 64
 
 const terrain = new Terrain({
-  seed: 124,
-  scale: 1,
-  persistance: 0.8,
-  lacunarity: 3,
+  seed: 124816,
+  scale: 0.05,
+  persistance: 0.1,
+  lacunarity: 0.1,
   octaves: 6,
   redistribution: 1.0
 })
@@ -20,7 +19,7 @@ const sketch = (p: p5) => {
 
   p.setup = () => {
     p.createCanvas(p.windowWidth - WINDOW_PADDING, p.windowHeight - WINDOW_PADDING)
-    currentView = new DebugCoordinateView(p)
+    currentView = new DebugBasicSquares(p, terrain)
   }
 
   p.draw = () => {

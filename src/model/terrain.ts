@@ -1,5 +1,5 @@
-import { FBM } from "ts-noise"
-import vec2 from "tsm/src/vec2.ts"
+import { UberNoise } from "uber-noise"
+import { type Vec2 } from "../lib/vector.ts"
 
 export type TerrainGenerationParams = {
   seed: number
@@ -11,20 +11,30 @@ export type TerrainGenerationParams = {
 }
 
 export class Terrain {
-  noise: FBM
+  noise: UberNoise
+  cached: Map<Vec2, number>
 
   public constructor(params: TerrainGenerationParams) {
-    this.noise = new FBM({
+    this.noise = new UberNoise({
       seed: params.seed,
+      min: 0,
+      max: 1,
       scale: params.scale,
-      persistance: params.persistance,
       lacunarity: params.lacunarity,
       octaves: params.octaves,
-      redistribution: params.redistribution
     })
+    this.cached = new Map<Vec2, number>()
   }
 
-  public sample(pos: vec2): number {
-    return this.noise.get2([pos.x, pos.y])
+  public sample(pos: Vec2): number {
+    const cachedVal = this.cached.get(pos)
+    if (cachedVal !== undefined) {
+      return cachedVal!
+    }
+    else {
+      const sample = this.noise.get(pos.x, pos.y)
+      this.cached.set(pos, sample)
+      return sample
+    }
   }
 }

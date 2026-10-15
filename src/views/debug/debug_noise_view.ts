@@ -1,7 +1,7 @@
-import vec2 from "tsm/src/vec2";
 import type { Terrain } from "../../model/terrain";
 import { View } from "../../view";
 import p5 from "p5";
+import vector from "../../lib/vector";
 
 export class DebugNoiseView extends View {
   terrain: Terrain
@@ -17,10 +17,9 @@ export class DebugNoiseView extends View {
     let max = 0
     for (let y = 0; y < size.y; y++) {
       for (let x = 0; x < size.x; x++) {
-        const worldPos = new vec2([x, y])
+        const worldPos = vector.make(x, y)
         const screenPos = this.worldToPx(worldPos)
         const sample = this.terrain.sample(worldPos)
-        console.log("x", worldPos.x, "y", worldPos.y, "sample", sample)
         min = Math.min(sample, min)
         max = Math.max(sample, max)
         const color = this.p.color(sample * 255)
