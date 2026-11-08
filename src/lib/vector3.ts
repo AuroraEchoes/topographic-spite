@@ -14,6 +14,12 @@ function scale(a: Vec3, s: number): Vec3 {
   return make(a.x * s, a.y * s, a.z * s)
 }
 
+function scaleInplace(a: Vec3, s: number): void {
+  a.x *= s
+  a.y *= s
+  a.z *= s
+}
+
 function sub(a: Vec3, b: Vec3): Vec3 {
   return add(a, scale(b, -1))
 }
@@ -124,6 +130,7 @@ export default {
   make,
   add,
   scale,
+  scaleInplace,
   mult,
   sub,
   len,

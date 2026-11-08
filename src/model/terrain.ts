@@ -37,7 +37,6 @@ export class Terrain {
     else {
       const sample = this.noise.get(pos.x, pos.y)
       this.cached.set(key, sample)
-      // console.log("Caching new position", pos.x, pos.y, "w/ key", key, " size ", this.cached.size)
       return sample
     }
   }

@@ -4,6 +4,8 @@ import { View } from "./view.ts";
 import vector3, { type Vec3 } from "../../lib/vector3.ts";
 import { Transform } from "../../lib/transform.ts";
 import { Color } from "../../lib/color.ts";
+import type { Vec2 } from "../../lib/vector2.ts";
+import { clamp } from "../../lib/math.ts";
 
 export type Line3D = {
   start: Vec3,
@@ -12,30 +14,36 @@ export type Line3D = {
   color?: Color
 }
 
-const MOVE_SPEED: number = 1000
+const MIN_MOVE_SPEED: number = 500
+const DEFAULT_MOVE_SPEED: number = 1000
+const MAX_MOVE_SPEED: number = 10000
 const DEFAULT_LINE_WIDTH = 6
 const DEFAULT_COLOR = new Color(0, 0, 0)
 
 export abstract class View3D extends View<Camera3D> {
   protected center: Vec3
   private lines: Line3D[] = []
+  private moveSpeed: number = DEFAULT_MOVE_SPEED
   protected transform: Transform
 
   public constructor(p: p5) {
     super(p, new Camera3D(p))
     this.center = vector3.make(0, 0, 0)
     this.transform = new Transform(vector3.make(0, 0, 0), vector3.make(0, 0, 0))
+    this.camera.zoomChanged = this.onZoom.bind(this)
   }
 
   public drawLine(line: Line3D) {
     this.lines.push(line)
   }
 
-  public abstract draw(): void
-
-  public activate(): void {
-    super.activate()
+  public drawLines(lines: Line3D[]) {
+    for (const line of lines) {
+      this.lines.push(line)
+    }
   }
+
+  public abstract draw(): void
 
   public getTransform(): Transform {
     return this.transform
@@ -48,14 +56,17 @@ export abstract class View3D extends View<Camera3D> {
     this.draw()
     const context = this.p.drawingContext as any
     for (const line of this.lines) {
-      const lineStartWorld = this.transform.transform(line.start)
-      const lineEndWorld = this.transform.transform(line.end)
+      // This would ordinarily be necessary but I know it’s not in this specific case
+      // Terrible hack for performance
+      // const lineStartWorld = this.transform.transform(line.start)
+      // const lineEndWorld = this.transform.transform(line.end)
 
-      // TODO: Cull off-screen lines
+      const lineStartScreen = this.camera.worldToScreen(line.start)
+      const lineEndScreen = this.camera.worldToScreen(line.end)
 
-      const lineStartScreen = this.camera.worldToScreen(lineStartWorld)
-      const lineEndScreen = this.camera.worldToScreen(lineEndWorld)
-
+      if (lineStartScreen === undefined || lineEndScreen === undefined) {
+        continue
+      }
       const path = new Path2D()
       path.moveTo(lineStartScreen.x, lineStartScreen.y)
       path.lineTo(lineEndScreen.x, lineEndScreen.y)
@@ -72,10 +83,15 @@ export abstract class View3D extends View<Camera3D> {
     const yAxis: number = +!!this.p.keyIsDown("e") - +!!this.p.keyIsDown("q")
     const zAxis: number = +!!this.p.keyIsDown("w") - +!!this.p.keyIsDown("s")
 
-    const velocity = this.p.deltaTime * (1 / 1000) * MOVE_SPEED
+    const velocity = this.p.deltaTime * (1 / 1000) * this.moveSpeed
     const delta = vector3.scale(vector3.make(xAxis, yAxis, zAxis), velocity)
     const cameraBasis = this.camera.transform.getBasis()
     const rotated = Transform.transformPoint(delta, cameraBasis.ihat, cameraBasis.jhat, cameraBasis.khat)
     this.camera.transform.setPosition(vector3.add(this.camera.transform.getPosition(), rotated))
+  }
+
+  private onZoom(_: Vec2, amount: number) {
+    const newSpeed = clamp(this.moveSpeed * amount, MIN_MOVE_SPEED, MAX_MOVE_SPEED)
+    this.moveSpeed = newSpeed
   }
 }

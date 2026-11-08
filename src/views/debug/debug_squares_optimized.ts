@@ -57,11 +57,13 @@ export class DebugSquaresOptimized extends View2D {
       }
     }
 
+    const drawingContext = (this.p.drawingContext) as any
+
     for (let i = 0; i < LEVEL_COUNT; i++) {
-      this.p.drawingContext.lineWidth = 8
-      this.p.drawingContext.stroke(paths[i])
+      drawingContext.lineWidth = 8
+      drawingContext.stroke(paths[i])
     }
-    this.p.drawingContext.lineWidth = this.p.strokeWeight()
+    drawingContext.lineWidth = this.p.strokeWeight()
   }
 
   private sampleGrid(): Float32Array {

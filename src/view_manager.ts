@@ -4,8 +4,14 @@ import type { View3D } from "./model/view/view3d"
 import type { View2D } from "./model/view/view2d"
 import { ZOOM_SENSITIVITY } from "./model/camera/camera2d"
 import vector2 from "./lib/vector2"
+import { TweakManager } from "./model/tweak_managers"
 
 export type ViewFactory = (p: p5) => View2D | View3D
+
+export let WINDOW_WIDTH: number
+export let WINDOW_HEIGHT: number
+
+const FPS_BUFFER_SIZE = 60
 
 export class ViewManager {
   private p: p5
@@ -13,6 +19,7 @@ export class ViewManager {
   private selection: { view: string }
   private active!: View2D | View3D
   private showFps: { show: boolean }
+  private fpsBuffer: number[] = []
 
   public constructor(p: p5, pane: Pane, factories: Record<string, ViewFactory>) {
     const names = Object.keys(factories)
@@ -28,6 +35,9 @@ export class ViewManager {
 
     this.p.mouseDragged = (event) => onMouseDragged(event, this, this.p)
     this.p.mouseWheel = (event) => onMouseWheel(event, this, this.p)
+    this.p.windowResized = (event) => onWindowResized(event, this.p)
+    WINDOW_WIDTH = this.p.windowWidth
+    WINDOW_HEIGHT = this.p.windowHeight
   }
 
   public render(): void {
@@ -40,12 +50,21 @@ export class ViewManager {
   }
 
   private activate(name: string): void {
+    TweakManager.instance.destroyAll()
     this.active = this.factories[name](this.p)
   }
 
   private drawFps() {
     if (this.showFps.show) {
-      const fps = this.p.frameRate()
+      const sample = this.p.frameRate()
+      this.fpsBuffer.push(sample)
+      if (this.fpsBuffer.length > FPS_BUFFER_SIZE) {
+        this.fpsBuffer = this.fpsBuffer.slice(this.fpsBuffer.length - FPS_BUFFER_SIZE)
+      }
+      let fps = 0
+      for (const s of this.fpsBuffer)
+        fps += s
+      fps /= this.fpsBuffer.length
       this.p.stroke(0)
       this.p.fill(this.p.color("green"))
       const prevTextSize = this.p.textSize()
@@ -74,4 +93,9 @@ function onMouseWheel(event: WheelEvent | undefined, viewManager: ViewManager, p
   const delta = vector2.make(event.movementX, event.movementY)
   const deltaNormalized = vector2.scale(delta, 1 / maxSize)
   viewManager.getActive().getCamera().zoom(deltaNormalized, Math.exp(-event.deltaY * ZOOM_SENSITIVITY))
+}
+
+function onWindowResized(event: Event | undefined, p: p5) {
+  WINDOW_WIDTH = p.windowWidth
+  WINDOW_HEIGHT = p.windowHeight
 }

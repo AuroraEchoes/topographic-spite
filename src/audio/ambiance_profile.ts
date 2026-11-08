@@ -1,6 +1,5 @@
 import { clamp } from "../lib/math"
-import vector2 from "../lib/vector2"
-import { COLS, GRID_SIZE, HEIGHT_PER_LEVEL, LEVEL_COUNT, ROWS, SquaresTerrain3D, TOTAL_HEIGHT } from "../views/squares_terrain_3d"
+import { GRID_SIZE, HEIGHT_PER_LEVEL, LEVEL_COUNT, SquaresTerrain3D, TOTAL_HEIGHT } from "../views/squares_terrain_3d"
 import type { AmbianceContext } from "./ambiance_context"
 
 export type AmbianceProfile = {
@@ -57,13 +56,8 @@ export const GROUND_FOOTSTEPS_AMBIANCE: AmbianceProfile = {
   minGain: 0.0,
   maxGain: 0.75,
   getValue: (ctx: AmbianceContext): number => {
-    const pos = ctx.view.getCamera().transform.getPosition();
-    const nearestX = Math.round(pos.x / GRID_SIZE)
-    const nearestZ = Math.round(pos.z / GRID_SIZE)
-    if (nearestX < 0 || nearestZ < 0 || nearestX >= COLS || nearestZ >= ROWS) {
-      return 1.0
-    }
-    const sample = (ctx.view as SquaresTerrain3D).getSample(vector2.make(nearestX, nearestZ))
+    const pos = ctx.view.getCamera().transform.getPosition()
+    const sample = (ctx.view as SquaresTerrain3D).getNoiseSampleAtCamera()
     if (sample === undefined) {
       return 1.0
     }
@@ -85,13 +79,8 @@ export const LOW_BIRDS_AMBIANCE: AmbianceProfile = {
   minGain: 0.0,
   maxGain: 2.0,
   getValue: (ctx: AmbianceContext): number => {
-    const pos = ctx.view.getCamera().transform.getPosition();
-    const nearestX = Math.round(pos.x / GRID_SIZE)
-    const nearestZ = Math.round(pos.z / GRID_SIZE)
-    if (nearestX < 0 || nearestZ < 0 || nearestX >= COLS || nearestZ >= ROWS) {
-      return 1.0
-    }
-    const sample = (ctx.view as SquaresTerrain3D).getSample(vector2.make(nearestX, nearestZ))
+    const pos = ctx.view.getCamera().transform.getPosition()
+    const sample = (ctx.view as SquaresTerrain3D).getNoiseSampleAtCamera()
     if (sample === undefined) {
       return 1.0
     }

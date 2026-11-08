@@ -10,6 +10,7 @@ import { Debug3DCube } from "./views/debug/debug_3d_cube.ts"
 import { Debug3DSquares } from "./views/debug/debug_squares_3d.ts"
 import { SquaresTerrain3D } from "./views/squares_terrain_3d.ts"
 import { TweakManager } from "./model/tweak_managers.ts"
+import "./style.css"
 
 const WINDOW_PADDING = 64
 
