@@ -1,5 +1,5 @@
 import { UberNoise } from "uber-noise"
-import { type Vec2 } from "../lib/vector.ts"
+import { type Vec2 } from "../lib/vector2.ts"
 
 const COORDINATE_OFFSET = 2 ** 16;
 

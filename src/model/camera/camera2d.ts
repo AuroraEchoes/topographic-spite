@@ -1,6 +1,8 @@
 import p5 from "p5";
-import vector, { type Vec2 } from "./lib/vector.ts"
-import { clamp } from "./lib/math.ts";
+import vector, { type Vec2 } from "../../lib/vector2.ts"
+import { clamp } from "../../lib/math.ts";
+import { Camera } from "./camera.ts";
+import vector2 from "../../lib/vector2.ts";
 
 export const DEFAULT_PIXELS_PER_UNIT = 100
 export const MIN_PIXELS_PER_UNIT = 10
@@ -10,13 +12,12 @@ export const ZOOM_SENSITIVITY = 0.001
 export type WorldRegion = { min: Vec2, max: Vec2 }
 export type GridRegion = WorldRegion & { columns: number, rows: number }
 
-export class Camera2D {
-  private p: p5
+export class Camera2D extends Camera {
   private center: Vec2
   private pixelsPerUnit: number
 
   public constructor(p: p5) {
-    this.p = p
+    super(p)
     this.center = vector.make(0, 0)
     this.pixelsPerUnit = DEFAULT_PIXELS_PER_UNIT
   }
@@ -41,6 +42,18 @@ export class Camera2D {
   public worldToScreen(world: Vec2): Vec2 {
     const fromCenterWorld = vector.add(world, vector.scale(this.center, -1))
     return vector.add(vector.scale(fromCenterWorld, this.pixelsPerUnit), vector.scale(this.screenPx(), 0.5))
+  }
+
+  public pan(normalized: Vec2): void {
+    const max = Math.max(this.p.width, this.p.height)
+    const deltaPx = vector2.mult(normalized, vector.make(max, max))
+    this.panByPx(deltaPx)
+  }
+
+  public zoom(centerNormalized: Vec2, amount: number): void {
+    const max = Math.max(this.p.width, this.p.height)
+    const centerPx = vector2.mult(centerNormalized, vector.make(max, max))
+    this.zoomAt(centerPx, amount)
   }
 
   public panByPx(deltaPx: Vec2): void {

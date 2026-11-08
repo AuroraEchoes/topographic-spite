@@ -1,11 +1,11 @@
 import type { Terrain } from "../../model/terrain";
-import { View } from "../../view";
+import { View2D } from "../../model/view/view2d";
 import p5 from "p5";
-import vector from "../../lib/vector";
+import vector from "../../lib/vector2";
 import { Corner, corner_to_vector as cornerToVector } from "../../model/directions";
 import { boolsToCase as boolsToCase, caseToLineSegments as caseToLineSegments } from "../../marching_squares/lookup_table";
 
-export class DebugBasicSquares extends View {
+export class DebugBasicSquares extends View2D {
   private terrain: Terrain
 
   public constructor(p: p5, terrain: Terrain) {

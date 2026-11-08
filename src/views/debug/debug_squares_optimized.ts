@@ -1,9 +1,9 @@
 import type { Terrain } from "../../model/terrain";
-import { View } from "../../view";
 import p5 from "p5";
-import vector, { type Vec2 } from "../../lib/vector";
+import vector, { type Vec2 } from "../../lib/vector2";
 import { Corner, corner_to_vector as cornerToVector } from "../../model/directions";
 import { boolsToCase, caseToLineSegments } from "../../marching_squares/lookup_table";
+import { View2D } from "../../model/view/view2d";
 
 const LEVEL_COUNT: number = 10
 const LEVEL_STEP: number = 1 / LEVEL_COUNT
@@ -11,7 +11,7 @@ const CORNERS: Corner[] = [Corner.BottomLeft, Corner.BottomRight, Corner.TopRigh
 const CORNER_OFFSETS: Vec2[] = CORNERS.map(cornerToVector)
 
 
-export class DebugSquaresOptimized extends View {
+export class DebugSquaresOptimized extends View2D {
   private terrain: Terrain
 
   public constructor(p: p5, terrain: Terrain) {

@@ -1,5 +1,5 @@
-import type { Vec2 } from "../lib/vector";
-import vector from "../lib/vector";
+import type { Vec2 } from "../lib/vector2";
+import vector from "../lib/vector2";
 
 export enum Corner {
   TopLeft,

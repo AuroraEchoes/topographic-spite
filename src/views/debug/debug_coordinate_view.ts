@@ -1,8 +1,8 @@
-import { View } from "../../view";
+import { View2D } from "../../model/view/view2d";
 
 const CIRCLE_DIAMETER_PROPORTION: number = 0.25
 
-export class DebugCoordinateView extends View {
+export class DebugCoordinateView extends View2D {
   public draw(): void {
     const unitSizePx = this.camera.unitPx()
 

@@ -1,9 +1,8 @@
 import type { Terrain } from "../../model/terrain";
-import { View } from "../../view";
 import p5 from "p5";
-import vector from "../../lib/vector";
+import { View2D } from "../../model/view/view2d";
 
-export class DebugNoiseView extends View {
+export class DebugNoiseView extends View2D {
   terrain: Terrain
 
   constructor(p: p5, terrain: Terrain) {

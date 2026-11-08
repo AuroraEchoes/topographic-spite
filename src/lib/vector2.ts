@@ -1,4 +1,4 @@
-// Implementation from https://github.com/mcrowe/vector2
+// Vector2 implementation based on https://github.com/mcrowe/vector2
 
 export interface Vec2 { x: number, y: number }
 export interface PolarVec2 { t: number, r: number }
@@ -16,7 +16,6 @@ function scale(a: Vec2, s: number): Vec2 {
   return make(a.x * s, a.y * s)
 }
 
-
 function sub(a: Vec2, b: Vec2): Vec2 {
   return add(a, scale(b, -1))
 }
@@ -29,7 +28,6 @@ function mult(a: Vec2, b: Vec2): Vec2 {
 function len(a: Vec2): number {
   return Math.sqrt(a.x * a.x + a.y * a.y)
 }
-
 
 function normalize(a: Vec2): Vec2 {
   const l = len(a)
@@ -137,7 +135,6 @@ function toPolar(v: Vec2): PolarVec2 {
     r: len(v)
   }
 }
-
 
 export default {
   make,

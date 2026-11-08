@@ -1,5 +1,5 @@
-import type { Vec2 } from "../lib/vector"
-import vector from "../lib/vector"
+import type { Vec2 } from "../lib/vector2"
+import vector from "../lib/vector2"
 
 export type LineSegment = {
   start: Vec2,
@@ -25,6 +25,30 @@ enum CaseIndex {
   Case15 = 15,
 }
 
+const NEW_LOOKUP_TABLE = {
+  0: [],
+  1: [{ start: vector.make(0.5, 0.0), end: vector.make(0.0, 0.5) }],
+  2: [{ start: vector.make(0.5, 0.0), end: vector.make(1.0, 0.5) }],
+  3: [{ start: vector.make(0.0, 0.5), end: vector.make(1.0, 0.5) }],
+  4: [{ start: vector.make(1.0, 0.5), end: vector.make(0.5, 1.0) }],
+  5: [
+    { start: vector.make(0.5, 0.0), end: vector.make(1.0, 0.5) },
+    { start: vector.make(0.5, 1.0), end: vector.make(0.0, 0.5) }
+  ],
+  6: [{ start: vector.make(0.5, 0.0), end: vector.make(0.5, 1.0) }],
+  7: [{ start: vector.make(0.5, 1.0), end: vector.make(0.0, 0.5) }],
+  8: [{ start: vector.make(0.5, 1.0), end: vector.make(0.0, 0.5) }],
+  9: [{ start: vector.make(0.5, 0.0), end: vector.make(0.5, 1.0) }],
+  10: [
+    { start: vector.make(1.0, 0.5), end: vector.make(0.5, 1.0) },
+    { start: vector.make(0.0, 0.5), end: vector.make(0.5, 0.0) }
+  ],
+  11: [{ start: vector.make(1.0, 0.5), end: vector.make(0.5, 1.0) }],
+  12: [{ start: vector.make(0.0, 0.5), end: vector.make(1.0, 0.5) }],
+  13: [{ start: vector.make(0.5, 0.0), end: vector.make(1.0, 0.5) }],
+  14: [{ start: vector.make(0.5, 0.0), end: vector.make(0.0, 0.5) }],
+  15: []
+}
 
 const LOOKUP_TABLE: { case: CaseIndex, segments: LineSegment[] }[] = [
   {
@@ -84,7 +108,8 @@ const LOOKUP_TABLE: { case: CaseIndex, segments: LineSegment[] }[] = [
 ]
 
 export function caseToLineSegments(caseIndex: CaseIndex): LineSegment[] {
-  return LOOKUP_TABLE.find(x => x.case == caseIndex)!.segments
+  // return LOOKUP_TABLE.find(x => x.case == caseIndex)!.segments
+  return NEW_LOOKUP_TABLE[caseIndex]
 }
 
 export function boolsToCase(bl: boolean, br: boolean, tr: boolean, tl: boolean): CaseIndex {
@@ -97,5 +122,6 @@ export function boolsToCase(bl: boolean, br: boolean, tr: boolean, tl: boolean):
     idx += 4
   if (tl)
     idx += 8
-  return Object.values(CaseIndex)[Object.values(CaseIndex).indexOf(idx)] as CaseIndex;
+  // return Object.values(CaseIndex)[Object.values(CaseIndex).indexOf(idx)] as CaseIndex;
+  return idx as CaseIndex
 }
